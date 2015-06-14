@@ -1,0 +1,11 @@
+[Unit]
+Description=LB helper service
+Requires=etcd.service
+
+[Service]
+EnvironmentFile=/etc/environment
+TimeoutStartSec=0
+ExecStartPre=/usr/bin/docker pull srirajan/lbhelper
+ExecStart=/usr/bin/docker run --rm --name lbhelper srirajan/lbhelper
+ExecStop=/usr/bin/docker stop lbhelper
+Restart=always

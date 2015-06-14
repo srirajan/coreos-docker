@@ -1,0 +1,21 @@
+[Unit]
+Description=Monitors db service
+Requires=etcd.service
+Requires=db.service
+BindsTo=db.service
+
+[Service]
+EnvironmentFile=/etc/environment
+Restart=always
+ExecStart=/bin/bash -c '\
+  while true; do \
+	  etcdctl set /services/db/db_private_ip \'{"value": \"${COREOS_PRIVATE_IPV4}\"}\' --ttl 10; \
+      sleep 10; \
+  done'
+
+# Stop
+ExecStop=/usr/bin/etcdctl rm /services/db/db_private_ip
+
+[X-Fleet]
+# Schedule on the same machine as the associated db service
+X-ConditionMachineOf=db.service
