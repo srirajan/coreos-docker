@@ -1,0 +1,15 @@
+#cloud-config
+coreos:
+  etcd:
+    # generate a new token for each unique cluster from https://discovery.etcd.io/new
+    # do this for every new cluster
+    discovery: https://discovery.etcd.io/eab11feac6e69216d0e9e38fef35ce9d
+    addr: $private_ipv4:4001
+    peer-addr: $private_ipv4:7001
+  fleet:
+    public-ip: $private_ipv4
+  units:
+    - name: etcd.service
+      command: start
+    - name: fleet.service
+      command: start
